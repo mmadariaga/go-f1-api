@@ -1,31 +1,10 @@
-package controller
+package test
 
 import (
 	"net/http"
-	"testing"
 
 	"github.com/stretchr/testify/mock"
 )
-
-func TestPing(t *testing.T) {
-
-	mockWriter := new(MockResponseWriter)
-	mockWriter.On(
-		"Write",
-		[]byte("pong"),
-	).Return(
-		len("pong"),
-		nil,
-	)
-
-	Ping(mockWriter, new(http.Request))
-
-	mockWriter.AssertExpectations(t)
-}
-
-////////////////////////////////////////
-// Helper structs & functions
-////////////////////////////////////////
 
 // http.ResponseWriter
 type MockResponseWriter struct {

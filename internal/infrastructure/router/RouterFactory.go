@@ -1,4 +1,4 @@
-package router
+package infrastructure_router
 
 import (
 	"github.com/go-chi/chi/v5"

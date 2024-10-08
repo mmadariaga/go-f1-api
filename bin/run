@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e 
+SCRIPT_DIR=$(dirname $(realpath $0))
+
+pushd ${SCRIPT_DIR}/../
+    go run cmd/api/main.go
+popd

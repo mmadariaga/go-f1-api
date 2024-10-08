@@ -1,4 +1,4 @@
-package middleware
+package infrastructure_middleware
 
 import (
 	"encoding/base64"

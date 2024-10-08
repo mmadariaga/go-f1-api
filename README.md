@@ -21,8 +21,9 @@ go run cmd/api/main.go
 
 ## Features
 
-Currently, the API only has one route:
+Currently, the API only has two routes:
 - `GET /ping`: Returns a simple "pong" response.
+- `GET /races`: Returns application_races.Response json object with a summary of all the races of the year 2024 in f1. This endpoint requires Basic Auth
 
 Example:
 ```bash
@@ -32,7 +33,7 @@ pong
 
 ## TODO
 
- - [ ] Add more routes and functionalities.
+ - [ ] Use goroutines to fetch data from third party APIs faster
  - [ ] Enhance test coverage.
 
 ## Licence
