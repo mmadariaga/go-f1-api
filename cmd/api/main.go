@@ -8,7 +8,7 @@ import (
 
 	"fmt"
 
-	"github.com/mmadariaga/go-api/internal/router"
+	"github.com/mmadariaga/go-api/internal/infrastructure/router"
 )
 
 func main() {
