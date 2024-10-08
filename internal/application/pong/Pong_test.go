@@ -1,4 +1,4 @@
-package application
+package application_pong
 
 import (
 	"testing"
@@ -8,7 +8,9 @@ import (
 
 func TestPong(t *testing.T) {
 
+	assert := assert.New(t)
+
 	resp := Pong()
 
-	assert.Equal(t, resp, "pong")
+	assert.Equal(resp, "pong")
 }

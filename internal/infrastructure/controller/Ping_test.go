@@ -1,4 +1,4 @@
-package controller
+package infrastructure_controller
 
 import (
 	"net/http"

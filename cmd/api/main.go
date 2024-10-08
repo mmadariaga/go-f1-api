@@ -8,14 +8,14 @@ import (
 
 	"fmt"
 
-	"github.com/mmadariaga/go-api/internal/infrastructure/router"
+	infrastructure_router "github.com/mmadariaga/go-api/internal/infrastructure/router"
 )
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	log.Print("Starting GO API service")
 
-	router := router.RouterFactory()
+	router := infrastructure_router.RouterFactory()
 
 	port := ":8080"
 	log.Print("listening on localhost" + port)

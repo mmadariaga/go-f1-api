@@ -1,11 +1,11 @@
-package router
+package infrastructure_router
 
 import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	myMiddlewares "github.com/mmadariaga/go-api/internal/infrastructure/middleware"
+	infrastructure_middleware "github.com/mmadariaga/go-api/internal/infrastructure/middleware"
 )
 
 func setMiddlewares(router *chi.Mux) *chi.Mux {
@@ -18,7 +18,7 @@ func setMiddlewares(router *chi.Mux) *chi.Mux {
 	router.Use(middleware.SupressNotFound(router))
 
 	// my middlewares
-	router.Use(myMiddlewares.BasicAuthMiddleware)
+	router.Use(infrastructure_middleware.BasicAuthMiddleware)
 
 	return router
 }
