@@ -21,7 +21,7 @@ type Position struct {
 func FetchPodiumByRace(raceId int, drivers []domain_model.Driver) ([3]Podium, error) {
 
 	targetUrl := "https://api.openf1.org/v1/position?position<=3&session_key=" + strconv.Itoa(raceId)
-	body, err := helper.HttpGet(targetUrl, true)
+	body, err := helper.HttpGet(targetUrl, &helper.HttpGetExtraArgs{UseCache: true, Retry: true})
 	if err != nil {
 		return [3]Podium{}, err
 	}
