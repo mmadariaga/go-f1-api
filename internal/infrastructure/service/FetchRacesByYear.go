@@ -17,7 +17,10 @@ type Race = domain_model.Race
 func FetchRacesByYear(year int) ([]Race, error) {
 
 	targetUrl := "https://api.openf1.org/v1/sessions?year=" + strconv.Itoa(year) + "&session_type=Race"
-	body := helper.HttpGet(targetUrl, true)
+	body, err := helper.HttpGet(targetUrl, true)
+	if err != nil {
+		return nil, err
+	}
 
 	// JSON to struct
 	var sessions []struct {

@@ -16,7 +16,10 @@ type Driver = domain_model.Driver
 func FetchDriversByRace(raceId int) ([]Driver, error) {
 
 	targetUrl := "https://api.openf1.org/v1/drivers?session_key=" + strconv.Itoa(raceId)
-	body := helper.HttpGet(targetUrl, true)
+	body, err := helper.HttpGet(targetUrl, true)
+	if err != nil {
+		return nil, err
+	}
 
 	// JSON to struct
 	var drivers []struct {
