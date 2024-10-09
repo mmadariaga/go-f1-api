@@ -144,6 +144,8 @@ func GetRacesByYear(
 		<pre class="file" id="file2" style="display: none">package domain_service
 
 import (
+        "sync"
+
         domain_model "github.com/mmadariaga/go-api/internal/domain/model"
 )
 
@@ -151,32 +153,90 @@ type GetDriversByRaceDependencies interface {
         FetchDriversByRace(raceId int) ([]domain_model.Driver, error)
 }
 
+type fetchDriversResponse struct {
+        raceId   int
+        response []domain_model.Driver
+        error    error
+}
+
 func GetDriversByRace(races []domain_model.Race, dependencies GetDriversByRaceDependencies) (map[int][]domain_model.Driver, error) <span class="cov8" title="1">{
 
         driversByRace := make(map[int][]domain_model.Driver)
 
+        var waitGroup sync.WaitGroup
+        respChannel := make(chan fetchDriversResponse, 8)
+
         for _, race := range races </span><span class="cov8" title="1">{
-                result, error := dependencies.FetchDriversByRace(race.Id)
-                if error != nil </span><span class="cov8" title="1">{
-                        return nil, error
+                waitGroup.Add(1)
+                go fetchDrivers(
+                        race.Id,
+                        dependencies,
+                        respChannel,
+                        &amp;waitGroup,
+                )
+        }</span>
+
+        <span class="cov8" title="1">go func() </span><span class="cov8" title="1">{
+                waitGroup.Wait()
+                close(respChannel)
+        }</span>()
+
+        <span class="cov8" title="1">for resp := range respChannel </span><span class="cov8" title="1">{
+
+                if resp.error != nil </span><span class="cov8" title="1">{
+                        return nil, resp.error
                 }</span>
 
-                <span class="cov8" title="1">driversByRace[race.Id] = result</span>
+                <span class="cov8" title="1">driversByRace[resp.raceId] = resp.response</span>
         }
 
         <span class="cov8" title="1">return driversByRace, nil</span>
+}
+
+func fetchDrivers(
+        raceId int,
+        dependencies GetDriversByRaceDependencies,
+        respChan chan&lt;- fetchDriversResponse,
+        waitGroup *sync.WaitGroup,
+) <span class="cov8" title="1">{
+        defer waitGroup.Done()
+
+        result, error := dependencies.FetchDriversByRace(raceId)
+
+        if error != nil </span><span class="cov8" title="1">{
+                respChan &lt;- fetchDriversResponse{
+                        raceId:   raceId,
+                        response: nil,
+                        error:    error,
+                }
+                return
+        }</span>
+
+        <span class="cov8" title="1">respChan &lt;- fetchDriversResponse{
+                raceId:   raceId,
+                response: result,
+                error:    nil,
+        }</span>
 }
 </pre>
 		
 		<pre class="file" id="file3" style="display: none">package domain_service
 
 import (
+        "sync"
+
         domain_model "github.com/mmadariaga/go-api/internal/domain/model"
 )
 
 type GetPodiumByRaceDependencies interface {
         GetDriversByRaceDependencies
         FetchPodiumByRace(raceId int, drivers []domain_model.Driver) ([3]domain_model.Podium, error)
+}
+
+type fetchPodiumsResponse struct {
+        raceId   int
+        response [3]domain_model.Podium
+        error    error
 }
 
 func GetPodiumByRace(
@@ -191,16 +251,61 @@ func GetPodiumByRace(
                 return nil, error
         }</span>
 
-        <span class="cov8" title="1">for _, race := range races </span><span class="cov8" title="1">{
-                result, error := dependencies.FetchPodiumByRace(race.Id, drivers[race.Id])
-                if error != nil </span><span class="cov8" title="1">{
-                        return nil, error
+        <span class="cov8" title="1">var waitGroup sync.WaitGroup
+        respChannel := make(chan fetchPodiumsResponse, 8)
+        for _, race := range races </span><span class="cov8" title="1">{
+                waitGroup.Add(1)
+                go fetchPodiums(
+                        race.Id,
+                        drivers[race.Id],
+                        dependencies,
+                        respChannel,
+                        &amp;waitGroup,
+                )
+        }</span>
+
+        <span class="cov8" title="1">go func() </span><span class="cov8" title="1">{
+                waitGroup.Wait()
+                close(respChannel)
+        }</span>()
+
+        <span class="cov8" title="1">for resp := range respChannel </span><span class="cov8" title="1">{
+
+                if resp.error != nil </span><span class="cov8" title="1">{
+                        return nil, resp.error
                 }</span>
 
-                <span class="cov8" title="1">podiumsByRace[race.Id] = result</span>
+                <span class="cov8" title="1">podiumsByRace[resp.raceId] = resp.response</span>
         }
 
         <span class="cov8" title="1">return podiumsByRace, nil</span>
+}
+
+func fetchPodiums(
+        raceId int,
+        drivers []domain_model.Driver,
+        dependencies GetPodiumByRaceDependencies,
+        respChan chan&lt;- fetchPodiumsResponse,
+        waitGroup *sync.WaitGroup,
+) <span class="cov8" title="1">{
+        defer waitGroup.Done()
+
+        result, error := dependencies.FetchPodiumByRace(raceId, drivers)
+
+        if error != nil </span><span class="cov8" title="1">{
+                respChan &lt;- fetchPodiumsResponse{
+                        raceId:   raceId,
+                        response: [3]domain_model.Podium{},
+                        error:    error,
+                }
+                return
+        }</span>
+
+        <span class="cov8" title="1">respChan &lt;- fetchPodiumsResponse{
+                raceId:   raceId,
+                response: result,
+                error:    nil,
+        }</span>
 }
 </pre>
 		
