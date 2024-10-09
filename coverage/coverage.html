@@ -57,11 +57,11 @@
 				
 				<option value="file0">github.com/mmadariaga/go-api/internal/application/pong/Pong.go (100.0%)</option>
 				
-				<option value="file1">github.com/mmadariaga/go-api/internal/application/races/GetRacesByYear.go (81.8%)</option>
+				<option value="file1">github.com/mmadariaga/go-api/internal/application/races/GetRacesByYear.go (100.0%)</option>
 				
-				<option value="file2">github.com/mmadariaga/go-api/internal/domain/service/GetDriversByRace.go (85.7%)</option>
+				<option value="file2">github.com/mmadariaga/go-api/internal/domain/service/GetDriversByRace.go (100.0%)</option>
 				
-				<option value="file3">github.com/mmadariaga/go-api/internal/domain/service/GetPodiumByRace.go (80.0%)</option>
+				<option value="file3">github.com/mmadariaga/go-api/internal/domain/service/GetPodiumByRace.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -105,7 +105,7 @@ func GetRacesByYear(
 ) ([]Response, error) <span class="cov8" title="1">{
 
         races, error := dependencies.FetchRacesByYear(year)
-        if error != nil </span><span class="cov0" title="0">{
+        if error != nil </span><span class="cov8" title="1">{
                 return nil, error
         }</span>
 
@@ -113,7 +113,7 @@ func GetRacesByYear(
                 races,
                 dependencies,
         )
-        if error != nil </span><span class="cov0" title="0">{
+        if error != nil </span><span class="cov8" title="1">{
                 return nil, error
         }</span>
 
@@ -157,7 +157,7 @@ func GetDriversByRace(races []domain_model.Race, dependencies GetDriversByRaceDe
 
         for _, race := range races </span><span class="cov8" title="1">{
                 result, error := dependencies.FetchDriversByRace(race.Id)
-                if error != nil </span><span class="cov0" title="0">{
+                if error != nil </span><span class="cov8" title="1">{
                         return nil, error
                 }</span>
 
@@ -187,13 +187,13 @@ func GetPodiumByRace(
         podiumsByRace := make(map[int][3]domain_model.Podium)
 
         drivers, error := GetDriversByRace(races, dependencies)
-        if error != nil </span><span class="cov0" title="0">{
+        if error != nil </span><span class="cov8" title="1">{
                 return nil, error
         }</span>
 
         <span class="cov8" title="1">for _, race := range races </span><span class="cov8" title="1">{
                 result, error := dependencies.FetchPodiumByRace(race.Id, drivers[race.Id])
-                if error != nil </span><span class="cov0" title="0">{
+                if error != nil </span><span class="cov8" title="1">{
                         return nil, error
                 }</span>
 

@@ -1,6 +1,7 @@
 package application_races
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -56,6 +57,104 @@ func TestGetRacesByYear(t *testing.T) {
 	assert.Equal(result[0].Podium[0].Position, 1)
 	assert.Equal(result[0].Podium[0].FullName, "Max VERSTAPPEN")
 	assert.Equal(result[0].Podium[1].FullName, "Fernando ALONSO")
+
+	mockInfraDependencies.AssertExpectations(t)
+}
+
+func TestFetchRacesByYearErrorHandling(t *testing.T) {
+
+	assert := assert.New(t)
+
+	mockInfraDependencies := new(MockInfraDependencies)
+	mockInfraDependencies.On(
+		"FetchRacesByYear",
+		2024,
+	).Return(
+		make([]domain_model.Race, 0),
+		errors.New("Unable to fetch races"),
+	)
+
+	_, error := GetRacesByYear(
+		2024,
+		mockInfraDependencies,
+	)
+
+	assert.NotEqual(error, nil)
+	assert.Equal(error.Error(), "Unable to fetch races")
+
+	mockInfraDependencies.AssertExpectations(t)
+}
+
+func TestFetchDriversByRaceErrorHandling(t *testing.T) {
+
+	assert := assert.New(t)
+
+	suzuka := test_domain_model.Suzuka()
+
+	mockInfraDependencies := new(MockInfraDependencies)
+	mockInfraDependencies.On(
+		"FetchRacesByYear",
+		2024,
+	).Return(
+		suzuka,
+		nil,
+	)
+	mockInfraDependencies.On(
+		"FetchDriversByRace",
+		suzuka[0].Id,
+	).Return(
+		make([]domain_model.Driver, 0),
+		errors.New("Unable to fetch drivers"),
+	)
+
+	_, error := GetRacesByYear(
+		2024,
+		mockInfraDependencies,
+	)
+
+	assert.NotEqual(error, nil)
+	assert.Equal(error.Error(), "Unable to fetch drivers")
+
+	mockInfraDependencies.AssertExpectations(t)
+}
+
+func TestFetchPodiumByRaceErrorHandling(t *testing.T) {
+
+	assert := assert.New(t)
+
+	suzuka := test_domain_model.Suzuka()
+
+	mockInfraDependencies := new(MockInfraDependencies)
+	mockInfraDependencies.On(
+		"FetchRacesByYear",
+		2024,
+	).Return(
+		suzuka,
+		nil,
+	)
+	mockInfraDependencies.On(
+		"FetchDriversByRace",
+		suzuka[0].Id,
+	).Return(
+		make([]domain_model.Driver, 0),
+		nil,
+	)
+	mockInfraDependencies.On(
+		"FetchPodiumByRace",
+		suzuka[0].Id,
+		[]domain_model.Driver{},
+	).Return(
+		[3]domain_model.Podium{},
+		errors.New("Unable to fetch podiums"),
+	)
+
+	_, error := GetRacesByYear(
+		2024,
+		mockInfraDependencies,
+	)
+
+	assert.NotEqual(error, nil)
+	assert.Equal(error.Error(), "Unable to fetch podiums")
 
 	mockInfraDependencies.AssertExpectations(t)
 }
