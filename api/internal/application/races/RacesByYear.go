@@ -15,20 +15,24 @@ type GetRacesByYearDependencies interface {
 	FetchRacesByYear(year int) ([]domain_model.Race, error)
 }
 
-func GetRacesByYear(
+type RacesByYear struct {
+	Dependencies GetRacesByYearDependencies
+}
+
+func (r *RacesByYear) Get(
 	year int,
-	dependencies GetRacesByYearDependencies,
 ) ([]Response, error) {
 
-	races, error := dependencies.FetchRacesByYear(year)
+	races, error := r.Dependencies.FetchRacesByYear(year)
 	if error != nil {
 		return nil, error
 	}
 
-	podiumsByRace, error := domain_service.GetPodiumByRace(
-		races,
-		dependencies,
-	)
+	podiumByRace := domain_service.PodiumByRace{
+		Dependencies: r.Dependencies,
+	}
+
+	podiumsByRace, error := podiumByRace.Get(races)
 	if error != nil {
 		return nil, error
 	}

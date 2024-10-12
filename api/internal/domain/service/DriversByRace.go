@@ -16,7 +16,11 @@ type fetchDriversResponse struct {
 	error    error
 }
 
-func GetDriversByRace(races []domain_model.Race, dependencies GetDriversByRaceDependencies) (map[int][]domain_model.Driver, error) {
+type DriversByRace struct {
+	Dependencies GetDriversByRaceDependencies
+}
+
+func (d *DriversByRace) Get(races []domain_model.Race) (map[int][]domain_model.Driver, error) {
 
 	driversByRace := make(map[int][]domain_model.Driver)
 
@@ -25,9 +29,8 @@ func GetDriversByRace(races []domain_model.Race, dependencies GetDriversByRaceDe
 
 	for _, race := range races {
 		waitGroup.Add(1)
-		go fetchDrivers(
+		go d.fetchDrivers(
 			race.Id,
-			dependencies,
 			respChannel,
 			&waitGroup,
 		)
@@ -50,15 +53,14 @@ func GetDriversByRace(races []domain_model.Race, dependencies GetDriversByRaceDe
 	return driversByRace, nil
 }
 
-func fetchDrivers(
+func (d *DriversByRace) fetchDrivers(
 	raceId int,
-	dependencies GetDriversByRaceDependencies,
 	respChan chan<- fetchDriversResponse,
 	waitGroup *sync.WaitGroup,
 ) {
 	defer waitGroup.Done()
 
-	result, error := dependencies.FetchDriversByRace(raceId)
+	result, error := d.Dependencies.FetchDriversByRace(raceId)
 
 	if error != nil {
 		respChan <- fetchDriversResponse{
