@@ -47,10 +47,11 @@ func TestGetRacesByYear(t *testing.T) {
 		nil,
 	)
 
-	result, error := GetRacesByYear(
-		2024,
-		mockInfraDependencies,
-	)
+	RacesByYear := RacesByYear{
+		Dependencies: mockInfraDependencies,
+	}
+
+	result, error := RacesByYear.Get(2024)
 
 	assert.Equal(error, nil)
 	assert.Equal(result[0].Race.CircuitName, "Suzuka")
@@ -74,10 +75,10 @@ func TestFetchRacesByYearErrorHandling(t *testing.T) {
 		errors.New("Unable to fetch races"),
 	)
 
-	_, error := GetRacesByYear(
-		2024,
-		mockInfraDependencies,
-	)
+	RacesByYear := RacesByYear{
+		Dependencies: mockInfraDependencies,
+	}
+	_, error := RacesByYear.Get(2024)
 
 	assert.NotEqual(error, nil)
 	assert.Equal(error.Error(), "Unable to fetch races")
@@ -107,10 +108,10 @@ func TestFetchDriversByRaceErrorHandling(t *testing.T) {
 		errors.New("Unable to fetch drivers"),
 	)
 
-	_, error := GetRacesByYear(
-		2024,
-		mockInfraDependencies,
-	)
+	RacesByYear := RacesByYear{
+		Dependencies: mockInfraDependencies,
+	}
+	_, error := RacesByYear.Get(2024)
 
 	assert.NotEqual(error, nil)
 	assert.Equal(error.Error(), "Unable to fetch drivers")
@@ -148,10 +149,10 @@ func TestFetchPodiumByRaceErrorHandling(t *testing.T) {
 		errors.New("Unable to fetch podiums"),
 	)
 
-	_, error := GetRacesByYear(
-		2024,
-		mockInfraDependencies,
-	)
+	RacesByYear := RacesByYear{
+		Dependencies: mockInfraDependencies,
+	}
+	_, error := RacesByYear.Get(2024)
 
 	assert.NotEqual(error, nil)
 	assert.Equal(error.Error(), "Unable to fetch podiums")

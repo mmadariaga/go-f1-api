@@ -17,14 +17,21 @@ type fetchPodiumsResponse struct {
 	error    error
 }
 
-func GetPodiumByRace(
+type PodiumByRace struct {
+	Dependencies GetPodiumByRaceDependencies
+}
+
+func (p *PodiumByRace) Get(
 	races []domain_model.Race,
-	dependencies GetPodiumByRaceDependencies,
 ) (map[int][3]domain_model.Podium, error) {
 
 	podiumsByRace := make(map[int][3]domain_model.Podium)
 
-	drivers, error := GetDriversByRace(races, dependencies)
+	driversByRace := DriversByRace{
+		Dependencies: p.Dependencies,
+	}
+
+	drivers, error := driversByRace.Get(races)
 	if error != nil {
 		return nil, error
 	}
@@ -33,10 +40,9 @@ func GetPodiumByRace(
 	respChannel := make(chan fetchPodiumsResponse, 8)
 	for _, race := range races {
 		waitGroup.Add(1)
-		go fetchPodiums(
+		go p.fetchPodiums(
 			race.Id,
 			drivers[race.Id],
-			dependencies,
 			respChannel,
 			&waitGroup,
 		)
@@ -59,16 +65,15 @@ func GetPodiumByRace(
 	return podiumsByRace, nil
 }
 
-func fetchPodiums(
+func (p *PodiumByRace) fetchPodiums(
 	raceId int,
 	drivers []domain_model.Driver,
-	dependencies GetPodiumByRaceDependencies,
 	respChan chan<- fetchPodiumsResponse,
 	waitGroup *sync.WaitGroup,
 ) {
 	defer waitGroup.Done()
 
-	result, error := dependencies.FetchPodiumByRace(raceId, drivers)
+	result, error := p.Dependencies.FetchPodiumByRace(raceId, drivers)
 
 	if error != nil {
 		respChan <- fetchPodiumsResponse{

@@ -57,11 +57,11 @@
 				
 				<option value="file0">github.com/mmadariaga/go-api/internal/application/pong/Pong.go (100.0%)</option>
 				
-				<option value="file1">github.com/mmadariaga/go-api/internal/application/races/GetRacesByYear.go (100.0%)</option>
+				<option value="file1">github.com/mmadariaga/go-api/internal/application/races/RacesByYear.go (100.0%)</option>
 				
-				<option value="file2">github.com/mmadariaga/go-api/internal/domain/service/GetDriversByRace.go (100.0%)</option>
+				<option value="file2">github.com/mmadariaga/go-api/internal/domain/service/DriversByRace.go (100.0%)</option>
 				
-				<option value="file3">github.com/mmadariaga/go-api/internal/domain/service/GetPodiumByRace.go (100.0%)</option>
+				<option value="file3">github.com/mmadariaga/go-api/internal/domain/service/PodiumByRace.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -99,20 +99,24 @@ type GetRacesByYearDependencies interface {
         FetchRacesByYear(year int) ([]domain_model.Race, error)
 }
 
-func GetRacesByYear(
+type RacesByYear struct {
+        Dependencies GetRacesByYearDependencies
+}
+
+func (r *RacesByYear) Get(
         year int,
-        dependencies GetRacesByYearDependencies,
 ) ([]Response, error) <span class="cov8" title="1">{
 
-        races, error := dependencies.FetchRacesByYear(year)
+        races, error := r.Dependencies.FetchRacesByYear(year)
         if error != nil </span><span class="cov8" title="1">{
                 return nil, error
         }</span>
 
-        <span class="cov8" title="1">podiumsByRace, error := domain_service.GetPodiumByRace(
-                races,
-                dependencies,
-        )
+        <span class="cov8" title="1">podiumByRace := domain_service.PodiumByRace{
+                Dependencies: r.Dependencies,
+        }
+
+        podiumsByRace, error := podiumByRace.Get(races)
         if error != nil </span><span class="cov8" title="1">{
                 return nil, error
         }</span>
@@ -159,7 +163,11 @@ type fetchDriversResponse struct {
         error    error
 }
 
-func GetDriversByRace(races []domain_model.Race, dependencies GetDriversByRaceDependencies) (map[int][]domain_model.Driver, error) <span class="cov8" title="1">{
+type DriversByRace struct {
+        Dependencies GetDriversByRaceDependencies
+}
+
+func (d *DriversByRace) Get(races []domain_model.Race) (map[int][]domain_model.Driver, error) <span class="cov8" title="1">{
 
         driversByRace := make(map[int][]domain_model.Driver)
 
@@ -168,9 +176,8 @@ func GetDriversByRace(races []domain_model.Race, dependencies GetDriversByRaceDe
 
         for _, race := range races </span><span class="cov8" title="1">{
                 waitGroup.Add(1)
-                go fetchDrivers(
+                go d.fetchDrivers(
                         race.Id,
-                        dependencies,
                         respChannel,
                         &amp;waitGroup,
                 )
@@ -193,15 +200,14 @@ func GetDriversByRace(races []domain_model.Race, dependencies GetDriversByRaceDe
         <span class="cov8" title="1">return driversByRace, nil</span>
 }
 
-func fetchDrivers(
+func (d *DriversByRace) fetchDrivers(
         raceId int,
-        dependencies GetDriversByRaceDependencies,
         respChan chan&lt;- fetchDriversResponse,
         waitGroup *sync.WaitGroup,
 ) <span class="cov8" title="1">{
         defer waitGroup.Done()
 
-        result, error := dependencies.FetchDriversByRace(raceId)
+        result, error := d.Dependencies.FetchDriversByRace(raceId)
 
         if error != nil </span><span class="cov8" title="1">{
                 respChan &lt;- fetchDriversResponse{
@@ -239,14 +245,21 @@ type fetchPodiumsResponse struct {
         error    error
 }
 
-func GetPodiumByRace(
+type PodiumByRace struct {
+        Dependencies GetPodiumByRaceDependencies
+}
+
+func (p *PodiumByRace) Get(
         races []domain_model.Race,
-        dependencies GetPodiumByRaceDependencies,
 ) (map[int][3]domain_model.Podium, error) <span class="cov8" title="1">{
 
         podiumsByRace := make(map[int][3]domain_model.Podium)
 
-        drivers, error := GetDriversByRace(races, dependencies)
+        driversByRace := DriversByRace{
+                Dependencies: p.Dependencies,
+        }
+
+        drivers, error := driversByRace.Get(races)
         if error != nil </span><span class="cov8" title="1">{
                 return nil, error
         }</span>
@@ -255,10 +268,9 @@ func GetPodiumByRace(
         respChannel := make(chan fetchPodiumsResponse, 8)
         for _, race := range races </span><span class="cov8" title="1">{
                 waitGroup.Add(1)
-                go fetchPodiums(
+                go p.fetchPodiums(
                         race.Id,
                         drivers[race.Id],
-                        dependencies,
                         respChannel,
                         &amp;waitGroup,
                 )
@@ -281,16 +293,15 @@ func GetPodiumByRace(
         <span class="cov8" title="1">return podiumsByRace, nil</span>
 }
 
-func fetchPodiums(
+func (p *PodiumByRace) fetchPodiums(
         raceId int,
         drivers []domain_model.Driver,
-        dependencies GetPodiumByRaceDependencies,
         respChan chan&lt;- fetchPodiumsResponse,
         waitGroup *sync.WaitGroup,
 ) <span class="cov8" title="1">{
         defer waitGroup.Done()
 
-        result, error := dependencies.FetchPodiumByRace(raceId, drivers)
+        result, error := p.Dependencies.FetchPodiumByRace(raceId, drivers)
 
         if error != nil </span><span class="cov8" title="1">{
                 respChan &lt;- fetchPodiumsResponse{

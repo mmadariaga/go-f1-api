@@ -13,10 +13,11 @@ import (
 
 func Races(w http.ResponseWriter, r *http.Request) {
 
-	races, error := application_races.GetRacesByYear(
-		2024,
-		&infraDependencies{},
-	)
+	racesByYear := application_races.RacesByYear{
+		Dependencies: &infraDependencies{},
+	}
+
+	races, error := racesByYear.Get(2024)
 	if error != nil {
 		log.Panic().Msg(error.Error())
 	}
