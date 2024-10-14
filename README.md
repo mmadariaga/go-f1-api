@@ -1,6 +1,6 @@
 # Go REST API - Learning Project
 
-This project is a personal learning exercise to build a simple REST API using Go. The goal is to practice building APIs with the following tools and libraries:
+This project is a personal learning exercise to build a simple REST API using Go and Next.js. The goal is to practice building APIs with the following tools and libraries:
 
 - **[go-chi/chi](https://github.com/go-chi/chi/v5)**: A lightweight, idiomatic HTTP router for Go.
 - **[rs/zerolog](https://github.com/rs/zerolog)**: A high-performance, structured logging library.
@@ -10,13 +10,13 @@ This project is a personal learning exercise to build a simple REST API using Go
 ## Install & Run
 ```bash
 git clone https://github.com/mmadariaga/go-api.git
-cd go-api
+cd go-api/api
 # install dependencies
 go mod tidy 
 # Run tests
-go test ./...
+bin/test
 # Run the server
-go run cmd/api/main.go 
+bin/run
 ```
 
 ## Features
@@ -32,9 +32,8 @@ pong
 ```
 
 ## TODO
-
- - [ ] Use goroutines to fetch data from third party APIs faster
- - [ ] Enhance test coverage.
+ - [ ] Accept year as an argumento of /races api endpoint (2024 currently)
+ - [ ] Create an interface in next.js with tailwind
 
 ## Licence
 This project is licensed under the MIT License - see the LICENSE file for details.
