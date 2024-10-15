@@ -13,9 +13,9 @@ import (
 
 func Races(w http.ResponseWriter, r *http.Request) {
 
-	racesByYear := application_races.RacesByYear{
-		Dependencies: &infraDependencies{},
-	}
+	racesByYear := application_races.NewRacesByYear(
+		&infraDependencies{},
+	)
 
 	races, error := racesByYear.Get(2024)
 	if error != nil {
