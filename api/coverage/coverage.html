@@ -100,21 +100,25 @@ type GetRacesByYearDependencies interface {
 }
 
 type RacesByYear struct {
-        Dependencies GetRacesByYearDependencies
+        dependencies GetRacesByYearDependencies
 }
+
+func NewRacesByYear(dependencies GetRacesByYearDependencies) *RacesByYear <span class="cov8" title="1">{
+        return &amp;RacesByYear{
+                dependencies: dependencies,
+        }
+}</span>
 
 func (r *RacesByYear) Get(
         year int,
 ) ([]Response, error) <span class="cov8" title="1">{
 
-        races, error := r.Dependencies.FetchRacesByYear(year)
+        races, error := r.dependencies.FetchRacesByYear(year)
         if error != nil </span><span class="cov8" title="1">{
                 return nil, error
         }</span>
 
-        <span class="cov8" title="1">podiumByRace := domain_service.PodiumByRace{
-                Dependencies: r.Dependencies,
-        }
+        <span class="cov8" title="1">podiumByRace := domain_service.NewPodiumByRace(r.dependencies)
 
         podiumsByRace, error := podiumByRace.Get(races)
         if error != nil </span><span class="cov8" title="1">{
@@ -164,8 +168,14 @@ type fetchDriversResponse struct {
 }
 
 type DriversByRace struct {
-        Dependencies GetDriversByRaceDependencies
+        dependencies GetDriversByRaceDependencies
 }
+
+func NewDriversByRace(dependencies GetDriversByRaceDependencies) *DriversByRace <span class="cov8" title="1">{
+        return &amp;DriversByRace{
+                dependencies: dependencies,
+        }
+}</span>
 
 func (d *DriversByRace) Get(races []domain_model.Race) (map[int][]domain_model.Driver, error) <span class="cov8" title="1">{
 
@@ -207,7 +217,7 @@ func (d *DriversByRace) fetchDrivers(
 ) <span class="cov8" title="1">{
         defer waitGroup.Done()
 
-        result, error := d.Dependencies.FetchDriversByRace(raceId)
+        result, error := d.dependencies.FetchDriversByRace(raceId)
 
         if error != nil </span><span class="cov8" title="1">{
                 respChan &lt;- fetchDriversResponse{
@@ -246,8 +256,14 @@ type fetchPodiumsResponse struct {
 }
 
 type PodiumByRace struct {
-        Dependencies GetPodiumByRaceDependencies
+        dependencies GetPodiumByRaceDependencies
 }
+
+func NewPodiumByRace(dependencies GetPodiumByRaceDependencies) *PodiumByRace <span class="cov8" title="1">{
+        return &amp;PodiumByRace{
+                dependencies: dependencies,
+        }
+}</span>
 
 func (p *PodiumByRace) Get(
         races []domain_model.Race,
@@ -255,9 +271,7 @@ func (p *PodiumByRace) Get(
 
         podiumsByRace := make(map[int][3]domain_model.Podium)
 
-        driversByRace := DriversByRace{
-                Dependencies: p.Dependencies,
-        }
+        driversByRace := NewDriversByRace(p.dependencies)
 
         drivers, error := driversByRace.Get(races)
         if error != nil </span><span class="cov8" title="1">{
@@ -301,7 +315,7 @@ func (p *PodiumByRace) fetchPodiums(
 ) <span class="cov8" title="1">{
         defer waitGroup.Done()
 
-        result, error := p.Dependencies.FetchPodiumByRace(raceId, drivers)
+        result, error := p.dependencies.FetchPodiumByRace(raceId, drivers)
 
         if error != nil </span><span class="cov8" title="1">{
                 respChan &lt;- fetchPodiumsResponse{
