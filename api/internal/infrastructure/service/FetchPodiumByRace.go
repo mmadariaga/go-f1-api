@@ -76,7 +76,7 @@ func positionsToPodium(values [3]Position, drivers []domain_model.Driver) [3]Pod
 		}
 
 		response[position] = Podium{
-			Position: values[i].DriverNumber,
+			Position: values[i].Position,
 			Driver:   driver,
 		}
 	}
