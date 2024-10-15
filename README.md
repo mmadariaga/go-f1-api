@@ -32,8 +32,7 @@ pong
 ```
 
 ## TODO
- - [ ] Accept year as an argumento of /races api endpoint (2024 currently)
- - [ ] Create an interface in next.js with tailwind
+ - [ ] Create a web interface with next.js and tailwind
 
 ## Licence
 This project is licensed under the MIT License - see the LICENSE file for details.
