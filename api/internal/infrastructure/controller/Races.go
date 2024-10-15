@@ -3,6 +3,9 @@ package infrastructure_controller
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
 
 	"github.com/rs/zerolog/log"
 
@@ -17,7 +20,9 @@ func Races(w http.ResponseWriter, r *http.Request) {
 		&infraDependencies{},
 	)
 
-	races, error := racesByYear.Get(2024)
+	races, error := racesByYear.Get(
+		getYearFromUrl(r),
+	)
 	if error != nil {
 		log.Panic().Msg(error.Error())
 	}
@@ -29,6 +34,21 @@ func Races(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(racesJson)
+}
+
+func getYearFromUrl(r *http.Request) int {
+
+	yearStr := chi.URLParam(r, "year")
+	if yearStr == "" {
+		yearStr = "2024"
+	}
+
+	year, error := strconv.Atoi(yearStr)
+	if error != nil {
+		log.Panic().Msg(error.Error())
+	}
+
+	return year
 }
 
 type infraDependencies struct{}

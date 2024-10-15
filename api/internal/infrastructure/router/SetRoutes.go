@@ -9,6 +9,7 @@ func setRoutes(router *chi.Mux) *chi.Mux {
 
 	router.Get("/ping", infrastructure_controller.Ping)
 	router.Get("/races", infrastructure_controller.Races)
+	router.Get("/races/{year}", infrastructure_controller.Races)
 
 	return router
 }
