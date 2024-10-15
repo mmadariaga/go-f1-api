@@ -16,21 +16,25 @@ type GetRacesByYearDependencies interface {
 }
 
 type RacesByYear struct {
-	Dependencies GetRacesByYearDependencies
+	dependencies GetRacesByYearDependencies
+}
+
+func NewRacesByYear(dependencies GetRacesByYearDependencies) *RacesByYear {
+	return &RacesByYear{
+		dependencies: dependencies,
+	}
 }
 
 func (r *RacesByYear) Get(
 	year int,
 ) ([]Response, error) {
 
-	races, error := r.Dependencies.FetchRacesByYear(year)
+	races, error := r.dependencies.FetchRacesByYear(year)
 	if error != nil {
 		return nil, error
 	}
 
-	podiumByRace := domain_service.PodiumByRace{
-		Dependencies: r.Dependencies,
-	}
+	podiumByRace := domain_service.NewPodiumByRace(r.dependencies)
 
 	podiumsByRace, error := podiumByRace.Get(races)
 	if error != nil {

@@ -17,7 +17,13 @@ type fetchDriversResponse struct {
 }
 
 type DriversByRace struct {
-	Dependencies GetDriversByRaceDependencies
+	dependencies GetDriversByRaceDependencies
+}
+
+func NewDriversByRace(dependencies GetDriversByRaceDependencies) *DriversByRace {
+	return &DriversByRace{
+		dependencies: dependencies,
+	}
 }
 
 func (d *DriversByRace) Get(races []domain_model.Race) (map[int][]domain_model.Driver, error) {
@@ -60,7 +66,7 @@ func (d *DriversByRace) fetchDrivers(
 ) {
 	defer waitGroup.Done()
 
-	result, error := d.Dependencies.FetchDriversByRace(raceId)
+	result, error := d.dependencies.FetchDriversByRace(raceId)
 
 	if error != nil {
 		respChan <- fetchDriversResponse{
