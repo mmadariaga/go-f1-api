@@ -23,7 +23,7 @@ bin/run
 
 Currently, the API only has two routes:
 - `GET /ping`: Returns a simple "pong" response.
-- `GET /races`: Returns application_races.Response json object with a summary of all the races of the year 2024 in f1. This endpoint requires Basic Auth
+- `GET /races/{year}`: Returns application_races.Response json object with a summary of all the races of the year 2024 in f1. This endpoint requires Basic Auth (go:api)
 
 Example:
 ```bash

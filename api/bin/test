@@ -4,7 +4,7 @@ set -e
 SCRIPT_DIR=$(dirname $(realpath $0))
 
 pushd ${SCRIPT_DIR}/../
-    go test -coverprofile=coverage/coverage.out ./internal/application/... ./internal/domain/...
+    go test -coverprofile=coverage/coverage.out ./internal/application/... ./internal/domain/... ./internal/infrastructure/middleware/...
     go tool cover -html=coverage/coverage.out -o=coverage/coverage.html
     rm coverage/coverage.out
 popd
