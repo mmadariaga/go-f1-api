@@ -1,103 +1,48 @@
-import Image from "next/image";
+import { UpcomingRaces } from "@/src/components/home/UpcomingRaces";
+import { Podium } from "@/src/components/results/Podium";
 
-import homeStyles from './home.module.css'
-
-export default function Home() {
+export default function Results() {
   return (
-    <div className={homeStyles.container}>
-      <main className={homeStyles.main}>
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className={homeStyles.orderedList}>
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className={homeStyles.code}>
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={homeStyles.externalLinks}>
-          <a
-            className={`${homeStyles.linkShared} ${homeStyles.deployLink}`}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className={`${homeStyles.linkShared} ${homeStyles.readDocsLink}`}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main>
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-5xl font-bold text-gray-800 mb-4">Latest F1 Race Results</h2>
+          <p className="text-lg text-gray-500 mb-8">Get the latest race results, standings, and upcoming schedules of the Formula 1 season.</p>
+          <a href="#" className="bg-red-600 text-white py-3 px-6 rounded-lg text-lg hover:bg-red-500">See Full Results</a>
         </div>
-      </main>
-      <footer className={homeStyles.footer}>
-        <a
-          className={homeStyles.footerLink}
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </section>
+      <div className="mx-auto container border-b-2 border-gray-200" />
+
+      { /* Latest Race Results */ }
+      <section className="container mx-auto py-12 px-4">
+        <h3 className="text-3xl font-semibold mb-6">Last Race: Italian Grand Prix</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <Podium
+            title={'1st Place'}
+            img={'/images/driver/alonso.jpeg'}
+            driver={'Fernando Alonso'}
+            team={'Aston Martin'}
+            time={'1:35:15'}
           />
-          Learn
-        </a>
-        <a
-          className={homeStyles.footerLink}
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+          <Podium
+            title={'2nd Place'}
+            img={'/images/driver/verstappen.jpeg'}
+            driver={'Max Verstappen'}
+            team={'Red Bull Racing'}
+            time={'1:35:22'}
           />
-          Examples
-        </a>
-        <a
-          className={homeStyles.footerLink}
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+          <Podium
+            title={'3rd Place'}
+            img={'/images/driver/hamilton.jpeg'}
+            driver={'Lewis Hamilton'}
+            team={'Mercedes'}
+            time={'1:35:55'}
           />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </div>
+      </section>
+      <div className="mx-auto container border-b-2 border-gray-200" />
+
+      <UpcomingRaces />
+    </main>
   );
 }
