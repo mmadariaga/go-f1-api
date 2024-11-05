@@ -12,25 +12,25 @@ func InitPodiums() {
 		return
 	}
 
-	drivers := GetAllDriverExamples()
-
 	podiums[0] = domain_model.Podium{
 		Position: 1,
-		Driver:   drivers["Max VERSTAPPEN"],
+		Driver:   GetMaxVerstappen(),
 	}
 
 	podiums[1] = domain_model.Podium{
 		Position: 2,
-		Driver:   drivers["Fernando ALONSO"],
+		Driver:   GetFernandoAlonso(),
 	}
 
 	podiums[2] = domain_model.Podium{
 		Position: 3,
-		Driver:   drivers["Lewis HAMILTON"],
+		Driver:   GetLewisHamilton(),
 	}
 }
 
 func GetPodiumWithDrivers(driver1, driver2, driver3 string) [3]domain_model.Podium {
+
+	drivers := GetAllDriverExamplesMap()
 	podiums := [3]domain_model.Podium{}
 
 	podiums[0] = domain_model.Podium{
