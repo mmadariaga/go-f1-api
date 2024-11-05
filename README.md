@@ -10,20 +10,16 @@ This project is a personal learning exercise to build a simple REST API using Go
 ## Install & Run
 ```bash
 git clone https://github.com/mmadariaga/go-api.git
-cd go-api/api
-# install dependencies
-go mod tidy 
-# Run tests
-bin/test
-# Run the server
-bin/run
+cd go-api
+docker-compose up
 ```
 
 ## Features
 
 Currently, the API only has two routes:
 - `GET /ping`: Returns a simple "pong" response.
-- `GET /races/{year}`: Returns application_races.Response json object with a summary of all the races of the year 2024 in f1. This endpoint requires Basic Auth (go:api)
+- `GET /races/{year}`: Returns application_races.RacesByYearResponse json object with a summary of all the races of the year 2024 in f1. This endpoint requires Basic Auth (go:api)
+- `GET /races/drivers`: Returns domain_model.Driver json object array with the drivers that participated in the last race. This endpoint requires Basic Auth (go:api)
 
 Example:
 ```bash
@@ -31,8 +27,8 @@ $ curl http://localhost:8080/ping
 pong
 ```
 
-## TODO
- - [ ] Create a web interface with next.js and tailwind
+## WIP
+ - Create a web interface with next.js and tailwind
 
 ## Licence
 This project is licensed under the MIT License - see the LICENSE file for details.
