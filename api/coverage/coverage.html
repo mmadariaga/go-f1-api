@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>pong: Go Coverage Report</title>
+		<title>drivers: Go Coverage Report</title>
 		<style>
 			body {
 				background: black;
@@ -55,15 +55,17 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/mmadariaga/go-api/internal/application/pong/Pong.go (100.0%)</option>
+				<option value="file0">github.com/mmadariaga/go-api/internal/application/drivers/LastRaceDrivers.go (100.0%)</option>
 				
-				<option value="file1">github.com/mmadariaga/go-api/internal/application/races/RacesByYear.go (100.0%)</option>
+				<option value="file1">github.com/mmadariaga/go-api/internal/application/pong/Pong.go (100.0%)</option>
 				
-				<option value="file2">github.com/mmadariaga/go-api/internal/domain/service/DriversByRace.go (100.0%)</option>
+				<option value="file2">github.com/mmadariaga/go-api/internal/application/races/RacesByYear.go (100.0%)</option>
 				
-				<option value="file3">github.com/mmadariaga/go-api/internal/domain/service/PodiumByRace.go (100.0%)</option>
+				<option value="file3">github.com/mmadariaga/go-api/internal/domain/service/DriversByRace.go (100.0%)</option>
 				
-				<option value="file4">github.com/mmadariaga/go-api/internal/infrastructure/middleware/BasicAuthMiddleware.go (100.0%)</option>
+				<option value="file4">github.com/mmadariaga/go-api/internal/domain/service/PodiumByRace.go (100.0%)</option>
+				
+				<option value="file5">github.com/mmadariaga/go-api/internal/infrastructure/middleware/BasicAuthMiddleware.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -77,21 +79,53 @@
 		</div>
 		<div id="content">
 		
-		<pre class="file" id="file0" style="display: none">package application_pong
+		<pre class="file" id="file0" style="display: none">package application_drivers
+
+import (
+        domain_model "github.com/mmadariaga/go-api/internal/domain/model"
+)
+
+type GetLastRaceDriversDependencies interface {
+        FetchLastRace() (domain_model.Race, error)
+        FetchDriversByRace(raceId int) ([]domain_model.Driver, error)
+}
+
+type LastRaceDrivers struct {
+        dependencies GetLastRaceDriversDependencies
+}
+
+func NewLastRaceDrivers(dependencies GetLastRaceDriversDependencies) *LastRaceDrivers <span class="cov8" title="1">{
+        return &amp;LastRaceDrivers{
+                dependencies: dependencies,
+        }
+}</span>
+
+func (r *LastRaceDrivers) Get() ([]domain_model.Driver, error) <span class="cov8" title="1">{
+
+        race, error := r.dependencies.FetchLastRace()
+        if error != nil </span><span class="cov8" title="1">{
+                return nil, error
+        }</span>
+
+        <span class="cov8" title="1">return r.dependencies.FetchDriversByRace(race.Id)</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package application_pong
 
 func Pong() string <span class="cov8" title="1">{
         return "pong"
 }</span>
 </pre>
 		
-		<pre class="file" id="file1" style="display: none">package application_races
+		<pre class="file" id="file2" style="display: none">package application_races
 
 import (
         domain_model "github.com/mmadariaga/go-api/internal/domain/model"
         domain_service "github.com/mmadariaga/go-api/internal/domain/service"
 )
 
-type Response struct {
+type RacesByYearResponse struct {
         domain_model.Race
         Podium [3]domain_model.Podium `json:"podium"`
 }
@@ -113,7 +147,7 @@ func NewRacesByYear(dependencies GetRacesByYearDependencies) *RacesByYear <span 
 
 func (r *RacesByYear) Get(
         year int,
-) ([]Response, error) <span class="cov8" title="1">{
+) ([]RacesByYearResponse, error) <span class="cov8" title="1">{
 
         races, error := r.dependencies.FetchRacesByYear(year)
         if error != nil </span><span class="cov8" title="1">{
@@ -127,14 +161,14 @@ func (r *RacesByYear) Get(
                 return nil, error
         }</span>
 
-        <span class="cov8" title="1">response := make([]Response, 0, len(races))
+        <span class="cov8" title="1">response := make([]RacesByYearResponse, 0, len(races))
         for _, race := range races </span><span class="cov8" title="1">{
 
                 podium := podiumsByRace[race.Id]
 
                 response = append(
                         response,
-                        Response{
+                        RacesByYearResponse{
                                 Race: domain_model.Race{
                                         Id:          race.Id,
                                         Year:        race.Year,
@@ -151,7 +185,7 @@ func (r *RacesByYear) Get(
 }
 </pre>
 		
-		<pre class="file" id="file2" style="display: none">package domain_service
+		<pre class="file" id="file3" style="display: none">package domain_service
 
 import (
         "sync"
@@ -238,7 +272,7 @@ func (d *DriversByRace) fetchDrivers(
 }
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package domain_service
+		<pre class="file" id="file4" style="display: none">package domain_service
 
 import (
         "sync"
@@ -336,7 +370,7 @@ func (p *PodiumByRace) fetchPodiums(
 }
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">package infrastructure_middleware
+		<pre class="file" id="file5" style="display: none">package infrastructure_middleware
 
 import (
         "fmt"

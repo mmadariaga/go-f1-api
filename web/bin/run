@@ -4,5 +4,5 @@ set -e
 SCRIPT_DIR=$(dirname $(realpath $0))
 
 pushd ${SCRIPT_DIR}/../
-    npm run dev
+    yarn run dev
 popd

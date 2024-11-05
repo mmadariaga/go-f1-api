@@ -11,9 +11,7 @@ import (
 	helper "github.com/mmadariaga/go-api/internal/infrastructure/service/helper"
 )
 
-type Driver = domain_model.Driver
-
-func FetchDriversByRace(raceId int) ([]Driver, error) {
+func FetchDriversByRace(raceId int) ([]domain_model.Driver, error) {
 
 	targetUrl := "https://api.openf1.org/v1/drivers?session_key=" + strconv.Itoa(raceId)
 	body, err := helper.HttpGet(targetUrl, &helper.HttpGetExtraArgs{UseCache: true, Retry: true})
@@ -37,10 +35,10 @@ func FetchDriversByRace(raceId int) ([]Driver, error) {
 	}
 
 	// Session to domain model
-	response := make([]Driver, 0, len(drivers))
+	response := make([]domain_model.Driver, 0, len(drivers))
 	for _, value := range drivers {
 
-		driver := Driver{
+		driver := domain_model.Driver{
 			Number:   value.Number,
 			FullName: value.FullName,
 			Country:  value.Country,

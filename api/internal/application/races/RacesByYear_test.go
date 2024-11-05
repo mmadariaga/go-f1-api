@@ -16,7 +16,7 @@ func TestGetRacesByYear(t *testing.T) {
 	assert := assert.New(t)
 
 	suzuka := test_domain_model.Suzuka()
-	drivers := test_domain_model.GetAllDriverExamplesAsArray()
+	drivers := test_domain_model.GetAllDriverExamples()
 	podiums := test_domain_model.GetPodiumWithDrivers(
 		"Max VERSTAPPEN",
 		"Fernando ALONSO",

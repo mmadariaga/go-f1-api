@@ -17,7 +17,7 @@ import (
 func Races(w http.ResponseWriter, r *http.Request) {
 
 	racesByYear := application_races.NewRacesByYear(
-		&infraDependencies{},
+		&racesInfraDependencies{},
 	)
 
 	races, error := racesByYear.Get(
@@ -51,14 +51,14 @@ func getYearFromUrl(r *http.Request) int {
 	return year
 }
 
-type infraDependencies struct{}
+type racesInfraDependencies struct{}
 
-func (d *infraDependencies) FetchRacesByYear(year int) ([]domain_model.Race, error) {
+func (d *racesInfraDependencies) FetchRacesByYear(year int) ([]domain_model.Race, error) {
 	return infrastructure_service.FetchRacesByYear(year)
 }
-func (d *infraDependencies) FetchPodiumByRace(raceId int, drivers []domain_model.Driver) ([3]domain_model.Podium, error) {
+func (d *racesInfraDependencies) FetchPodiumByRace(raceId int, drivers []domain_model.Driver) ([3]domain_model.Podium, error) {
 	return infrastructure_service.FetchPodiumByRace(raceId, drivers)
 }
-func (d *infraDependencies) FetchDriversByRace(raceId int) ([]domain_model.Driver, error) {
+func (d *racesInfraDependencies) FetchDriversByRace(raceId int) ([]domain_model.Driver, error) {
 	return infrastructure_service.FetchDriversByRace(raceId)
 }
