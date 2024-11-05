@@ -5,7 +5,7 @@ import (
 	domain_service "github.com/mmadariaga/go-api/internal/domain/service"
 )
 
-type Response struct {
+type RacesByYearResponse struct {
 	domain_model.Race
 	Podium [3]domain_model.Podium `json:"podium"`
 }
@@ -27,7 +27,7 @@ func NewRacesByYear(dependencies GetRacesByYearDependencies) *RacesByYear {
 
 func (r *RacesByYear) Get(
 	year int,
-) ([]Response, error) {
+) ([]RacesByYearResponse, error) {
 
 	races, error := r.dependencies.FetchRacesByYear(year)
 	if error != nil {
@@ -41,14 +41,14 @@ func (r *RacesByYear) Get(
 		return nil, error
 	}
 
-	response := make([]Response, 0, len(races))
+	response := make([]RacesByYearResponse, 0, len(races))
 	for _, race := range races {
 
 		podium := podiumsByRace[race.Id]
 
 		response = append(
 			response,
-			Response{
+			RacesByYearResponse{
 				Race: domain_model.Race{
 					Id:          race.Id,
 					Year:        race.Year,

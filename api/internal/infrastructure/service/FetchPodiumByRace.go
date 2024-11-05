@@ -11,19 +11,17 @@ import (
 	helper "github.com/mmadariaga/go-api/internal/infrastructure/service/helper"
 )
 
-type Podium = domain_model.Podium
-
 type Position struct {
 	DriverNumber int `json:"driver_number"`
 	Position     int `json:"position"`
 }
 
-func FetchPodiumByRace(raceId int, drivers []domain_model.Driver) ([3]Podium, error) {
+func FetchPodiumByRace(raceId int, drivers []domain_model.Driver) ([3]domain_model.Podium, error) {
 
 	targetUrl := "https://api.openf1.org/v1/position?position<=3&session_key=" + strconv.Itoa(raceId)
 	body, err := helper.HttpGet(targetUrl, &helper.HttpGetExtraArgs{UseCache: true, Retry: true})
 	if err != nil {
-		return [3]Podium{}, err
+		return [3]domain_model.Podium{}, err
 	}
 
 	// JSON to struct
@@ -32,7 +30,7 @@ func FetchPodiumByRace(raceId int, drivers []domain_model.Driver) ([3]Podium, er
 	if err := json.Unmarshal(body, &positions); err != nil {
 		errorMsg := "FetchPodiumByRace JSON deserialization error: " + err.Error() + " in " + string(body)
 		log.Error().Msg(errorMsg)
-		return [3]Podium{}, errors.New(errorMsg)
+		return [3]domain_model.Podium{}, errors.New(errorMsg)
 	}
 
 	latestPositions := getLatestPositions(positions)
@@ -56,13 +54,13 @@ func getLatestPositions(values []Position) [3]Position {
 	return response
 }
 
-func positionsToPodium(values [3]Position, drivers []domain_model.Driver) [3]Podium {
+func positionsToPodium(values [3]Position, drivers []domain_model.Driver) [3]domain_model.Podium {
 
-	response := [3]Podium{}
+	response := [3]domain_model.Podium{}
 	for i := len(values) - 1; i >= 0; i-- {
 
 		position := values[i].Position - 1
-		if response[position] != (Podium{}) {
+		if response[position] != (domain_model.Podium{}) {
 			continue
 		}
 
@@ -75,7 +73,7 @@ func positionsToPodium(values [3]Position, drivers []domain_model.Driver) [3]Pod
 			continue
 		}
 
-		response[position] = Podium{
+		response[position] = domain_model.Podium{
 			Position: values[i].Position,
 			Driver:   driver,
 		}

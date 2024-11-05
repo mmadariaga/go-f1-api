@@ -12,9 +12,7 @@ import (
 	helper "github.com/mmadariaga/go-api/internal/infrastructure/service/helper"
 )
 
-type Race = domain_model.Race
-
-func FetchRacesByYear(year int) ([]Race, error) {
+func FetchRacesByYear(year int) ([]domain_model.Race, error) {
 
 	targetUrl := "https://api.openf1.org/v1/sessions?year=" + strconv.Itoa(year) + "&session_type=Race"
 	body, err := helper.HttpGet(targetUrl, &helper.HttpGetExtraArgs{UseCache: true, Retry: true})
@@ -37,7 +35,7 @@ func FetchRacesByYear(year int) ([]Race, error) {
 	}
 
 	// Session to domain model
-	response := make([]Race, 0, len(sessions))
+	response := make([]domain_model.Race, 0, len(sessions))
 	for _, value := range sessions {
 
 		date, err := time.Parse("2006-01-02T15:04:05-07:00", value.DateStart)
@@ -47,7 +45,7 @@ func FetchRacesByYear(year int) ([]Race, error) {
 			return nil, errors.New(errorMsg)
 		}
 
-		race := Race{
+		race := domain_model.Race{
 			Id:          value.Id,
 			Year:        date.Year(),
 			StartDate:   date,
