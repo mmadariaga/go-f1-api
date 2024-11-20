@@ -1,4 +1,3 @@
-import { Podium } from "@/src/components/results/Podium";
 
 export default function Results() {
   return (
