@@ -1,6 +1,12 @@
-import { Driver } from "@/src/components/drivers/Driver";
+import { Suspense } from "react";
+
+import { Drivers as DriversComponent } from "@/src/components/drivers/Drivers";
+import { DriversSkeleton } from "@/src/components/drivers/DriversSkeleton";
 
 export default function Drivers() {
+
+  const year = (new Date()).getFullYear();
+
   return (
     <main>
         <section className="py-16 bg-gray-50">
@@ -13,26 +19,11 @@ export default function Drivers() {
         <div className="mx-auto container border-b-2 border-gray-200"></div>
 
         <section className="container mx-auto py-12 px-4">
-            <h3 className="text-3xl font-semibold mb-6">2024 Drivers</h3>
+            <h3 className="text-3xl font-semibold mb-6">{year} Drivers</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <Driver
-                    name="Lewis Hamilton"
-                    img="hamilton.jpeg"
-                    team="Mercedes"
-                    championships={7}
-                />
-                <Driver
-                    name="Max Verstappen"
-                    img="verstappen.jpeg"
-                    team="Red Bull Racing"
-                    championships={2}
-                />
-                <Driver
-                    name="Fernando Alonso"
-                    img="alonso.jpeg"
-                    team="Aston Martin"
-                    championships={2}
-                />
+                <Suspense fallback={<DriversSkeleton />}>
+                  <DriversComponent />
+                </Suspense>
             </div>
         </section>
     </main>

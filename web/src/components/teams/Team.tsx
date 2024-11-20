@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface TeamProps {
     name: string;
     img: string;
@@ -12,7 +14,7 @@ export function Team (props: TeamProps): JSX.Element {
     return (
         <div className="p-6 rounded-lg shadow-2xl">
             <div className="bg-white flex items-center">
-                <img src={`/images/team/${img}`} alt={name} className="w-16 h-16 rounded-full mr-4" />
+                <Image src={`/images/team/${img}`} width={64} height={64} alt={name} className="w-16 h-16 rounded-full mr-4" />
                 <div>
                     <h4 className="text-xl font-bold mb-2 text-gray-800">{name}</h4>
                     <p className="text-lg text-gray-600">Team Principal: {teamPrincipal}</p>
